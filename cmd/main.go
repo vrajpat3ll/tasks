@@ -108,7 +108,8 @@ func main() {
 		println("Complete ID: ", completeID)
 
 		if err := todos.Complete(completeID); err != nil {
-			fmt.Println("Could not complete task!")
+			fmt.Println(RED("Could not complete task!"))
+			os.Exit(1)
 		}
 	
 	case deleteID != 0:
@@ -116,11 +117,12 @@ func main() {
 		println("Delete ID: ", deleteID)
 
 		if err := todos.Delete(deleteID); err != nil {
-			fmt.Println("Could not delete task!")
+			fmt.Println(RED("Could not delete task!"))
+			os.Exit(1)
 		}
 	
 	default:
-		fmt.Fprintln(os.Stdout, "invalid command")
+		fmt.Fprintln(os.Stdout, RED("invalid command"))
 		os.Exit(1)
 	}
 	
