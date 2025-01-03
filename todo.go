@@ -3,10 +3,10 @@ package tasks
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	"github.com/alexeyco/simpletable"
 	"github.com/mergestat/timediff"
 	"os"
-	"text/tabwriter"
+	"strconv"
 	"time"
 )
 
@@ -29,7 +29,7 @@ func (t *TODOs) Add(task string) {
 
 func (t *TODOs) Complete(id int) error {
 	ls := *t
-	
+
 	id--
 	if id < 0 || id >= len(ls) {
 		return errors.New("invalid index")
@@ -45,17 +45,33 @@ func (t *TODOs) List() {
 		return
 	}
 	// display
-	writer := tabwriter.NewWriter(os.Stdout, 0, 4, 2, ' ', tabwriter.TabIndent)
-	fmt.Fprintln(writer, "Done\tID\tTask\tTime Added")
+
+	table := simpletable.New()
+	table.Header = &simpletable.Header{
+		Cells: []*simpletable.Cell{
+			{Align: simpletable.AlignCenter, Text: "Done?"},
+			{Align: simpletable.AlignCenter, Text: "ID"},
+			{Align: simpletable.AlignCenter, Text: "Task"},
+			{Align: simpletable.AlignCenter, Text: "Time Added"},
+		},
+	}
 	for i, item := range *t {
 		i++
 		done := "❌"
 		if item.Done {
 			done = "✅"
 		}
-		fmt.Fprintf(writer, "%v\t%d\t%s\t%s\n", done, i, item.Task, timediff.TimeDiff(item.CreatedAt))
+		table.Body.Cells = append(table.Body.Cells, []*simpletable.Cell{
+			{Align: simpletable.AlignCenter, Text: done},
+			{Align: simpletable.AlignCenter, Text: strconv.Itoa(i)},
+			{Align: simpletable.AlignLeft, Text: item.Task},
+			{Align: simpletable.AlignCenter, Text: timediff.TimeDiff(item.CreatedAt)},
+		})
+		// ("%v\t%d\t%s\t%s\n", done, i, item.Task, timediff.TimeDiff(item.CreatedAt))
 	}
-	writer.Flush()
+	table.SetStyle(simpletable.StyleCompactLite)
+	table.Println()
+
 }
 
 func (t *TODOs) Delete(id int) error {
