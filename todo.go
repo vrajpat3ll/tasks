@@ -10,6 +10,16 @@ import (
 	"time"
 )
 
+func YELLOW(msg string) string {
+	return "\u001b[33m" + msg + "\u001b[0m"
+}
+func CYAN(msg string) string {
+	return "\u001b[36m" + msg + "\u001b[0m"
+}
+func GREEN(msg string) string {
+	return "\u001b[32m" + msg + "\u001b[0m"
+}
+
 type item struct {
 	Task      string
 	Done      bool
@@ -61,12 +71,22 @@ func (t *TODOs) List() {
 		if item.Done {
 			done = "✅"
 		}
-		table.Body.Cells = append(table.Body.Cells, []*simpletable.Cell{
-			{Align: simpletable.AlignCenter, Text: done},
-			{Align: simpletable.AlignCenter, Text: strconv.Itoa(i)},
-			{Align: simpletable.AlignLeft, Text: item.Task},
-			{Align: simpletable.AlignCenter, Text: timediff.TimeDiff(item.CreatedAt)},
-		})
+		if item.Done {
+			table.Body.Cells = append(table.Body.Cells, []*simpletable.Cell{
+				{Align: simpletable.AlignCenter, Text: done},
+				{Align: simpletable.AlignCenter, Text: strconv.Itoa(i)},
+				{Align: simpletable.AlignLeft, Text: GREEN(item.Task)},
+				{Align: simpletable.AlignCenter, Text: GREEN(timediff.TimeDiff(item.CreatedAt))},
+			})
+
+		} else {
+			table.Body.Cells = append(table.Body.Cells, []*simpletable.Cell{
+				{Align: simpletable.AlignCenter, Text: done},
+				{Align: simpletable.AlignCenter, Text: strconv.Itoa(i)},
+				{Align: simpletable.AlignLeft, Text: CYAN(item.Task)},
+				{Align: simpletable.AlignCenter, Text: YELLOW(timediff.TimeDiff(item.CreatedAt))},
+			})
+		}
 		// ("%v\t%d\t%s\t%s\n", done, i, item.Task, timediff.TimeDiff(item.CreatedAt))
 	}
 	table.SetStyle(simpletable.StyleCompactLite)

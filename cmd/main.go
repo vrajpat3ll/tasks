@@ -45,6 +45,9 @@ func Usage() {
 	fmt.Println("")
 	fmt.Println("\u001b[1mcomplete\u001b[0m int:")
 	fmt.Println("    - index of todo to complete")
+	fmt.Println("")
+	fmt.Println("\u001b[1mdelete\u001b[0m int:")
+	fmt.Println("    - index of todo to delete")
 }
 func main() {
 	if len(os.Args) < 2 {
